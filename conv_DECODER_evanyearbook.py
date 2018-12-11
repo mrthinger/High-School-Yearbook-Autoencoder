@@ -144,7 +144,7 @@ fc2out = 100
 
 constraintNodes = 15
 
-regularization = 0.00333
+regularization = 0.0
 
 graph = tf.Graph()
 with graph.as_default():
@@ -152,6 +152,9 @@ with graph.as_default():
     trainData = tf.constant(images, tf.float32)
     p5 = tf.constant(0.5, tf.float32)
     regularizationTensor = tf.constant(regularization, tf.float32)
+
+    encodedHolder = tf.placeholder(tf.float32, shape=[None, constraintNodes])
+    shouldDecode = tf.placeholder(tf.bool)
 
     #Encoder
     with tf.name_scope('Encoder'):
@@ -177,6 +180,7 @@ with graph.as_default():
 
     #decoder
     with tf.name_scope('Decoder'):
+        constraints = tf.cond(shouldDecode, lambda: encodedHolder, lambda: constraints) 
         fc4 = fc_layer(constraints, constraintNodes, fc2out)
         fc5 = fc_layer(fc4, fc2out, fc1out)
         fc6 = fc_layer(fc5, fc1out, c3Features)
@@ -215,36 +219,80 @@ boardLogEvery = 250
 #iterations = 1000
 networkNames = ['conv20', 'conv15']
 networkIndex = 1
-tensorboardDir = 'C:\\Projects\\ML\\autoencoder\\tensorboard\\{}'.format(networkNames[networkIndex])
 checkpointfile = 'C:\\Projects\\ML\\autoencoder\\model\\{}\\CONV_textbookAE.ckpt'.format(networkNames[networkIndex])
 with tf.Session(graph=graph) as sess:
-    summ = tf.summary.merge_all()
 
     saver = tf.train.Saver()
     tf.global_variables_initializer().run()
 
-    writer = tf.summary.FileWriter(tensorboardDir)
-    writer.add_graph(sess.graph)
-
     #To restore state
-    #saver.restore(sess, checkpointfile)
+    saver.restore(sess, checkpointfile)
 
-    # nus = sess.run([constraints])
-    # print('Evan', nus[0][1])
-    # print('Nat', nus[0][2])
 
-    for i in range(iterations):
-        sess.run([optimizer])
 
-        if (i % boardLogEvery == 0):
-            s, step = sess.run([summ, global_step])
-            writer.add_summary(s, step)
 
-        if (i % 5000 == 0):
-            saver.save(sess,checkpointfile)
-            print('\nCheckpoint Created\n')
+    nat = [0.4460272,  0.5121875,  0.40853995, 0.47465336, 0.4278246,  0.4834166,
+        0.46826416, 0.5314082,  0.48043948, 0.5787998,  0.5173373,  0.53624415,
+        0.506326,   0.5347276,  0.42757642]
+
+    evan = [0.55635655, 0.42854428, 0.549732,   0.5304941,  0.52968353, 0.53401625,
+            0.40399665, 0.52594644, 0.5077745,  0.4597348,  0.52699035, 0.5100265,
+            0.43109906, 0.539369,  0.49081263]
+
+    frames = 150
+    fourcc = cv2.VideoWriter_fourcc('M','J','P','G')
+    out = cv2.VideoWriter('convNat.avi',fourcc, 30, (56*3, 68*3), True)
+
+    for i in tqdm(range(len(evan))):
+        for f in range(frames):
+
+            feednums = np.asarray(nat.copy())
+            feednums[i] = f / float(frames)
+            feednums = np.atleast_2d(feednums)
+
+            for a in range(len(images)-1):
+                zeros = np.zeros(15)
+                zeros = np.atleast_2d(zeros)
+                feednums = np.vstack((feednums, zeros))
+
+
+            evalDict = {
+                shouldDecode: True,
+                encodedHolder: feednums
+            }
+
+
+
+            #MANIP
+            prediction = sess.run([result], feed_dict=evalDict)
+
+            img = enlargeImg(prediction[0][0])
+
+            img = np.multiply(img, 256.0)
+
+            img = img.astype(np.uint8)
+
+
+            out.write(img)
+
+    out.release()
+
 
 
         
 
+
+    #TRAIN
+    # for i in range(iterations):
+    #     sess.run([optimizer], feed_dict=evalDict)
+        
+
+    #     if (i % boardLogEvery == 0):
+    #         s, step = sess.run([summ, global_step], feed_dict=evalDict)
+    #         writer.add_summary(s, step)
+
+                    
+    #     if (i % 5000 == 0):
+    #         saver.save(sess,checkpointfile)
+    #         print('\nCheckpoint Created\n')
     
