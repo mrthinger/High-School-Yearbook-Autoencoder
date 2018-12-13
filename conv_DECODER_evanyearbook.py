@@ -8,7 +8,7 @@ from tqdm import tqdm
 #image dimensions are 550x680
 scale = 1
 squishDim = (56*scale,68*scale) 
-facesFolder = "C:\\Users\\miste\\Desktop\\ProjectNov18\\faces"
+facesFolder = "C:\\Users\\miste\\Desktop\\ProjectNov18\\testfaces"
 
 faces = os.listdir(facesFolder)
 
@@ -132,17 +132,17 @@ fc_layer.count = 0
 
 
 
-c1out = 9
-c1filter = 3
-c2out = 18
+c1out = 27
+c1filter = 6
+c2out = 81
 c2filter = 3
-c3out = 36
-c3filter = 3
+c3out = 243
+c3filter = 2
 
-fc1out = 700
-fc2out = 100
+fc1out = 1000
+fc2out = 250
 
-constraintNodes = 15
+constraintNodes = 25
 
 regularization = 0.0
 
@@ -212,13 +212,8 @@ with graph.as_default():
 
 
 
-
-iterations = 1000000
-statusEvery = 1000
-boardLogEvery = 250
-#iterations = 1000
-networkNames = ['conv20', 'conv15']
-networkIndex = 1
+networkNames = ['conv20', 'conv15', 'conv30', 'conv30v2', '4conv25']
+networkIndex = 4
 checkpointfile = 'C:\\Projects\\ML\\autoencoder\\model\\{}\\CONV_textbookAE.ckpt'.format(networkNames[networkIndex])
 with tf.Session(graph=graph) as sess:
 
@@ -228,30 +223,37 @@ with tf.Session(graph=graph) as sess:
     #To restore state
     saver.restore(sess, checkpointfile)
 
+    evan = [0.6284481,  0.43505114, 0.5621194,  0.4470127,  0.56308216, 0.45016283,
+        0.5196135,  0.5566554,  0.44984707, 0.5131169,  0.52698505, 0.60874164,
+        0.3774942,  0.6907064,  0.5901814,  0.570823,   0.6850461,  0.6540827,
+        0.40694383, 0.32772502, 0.35705832, 0.3605123,  0.42152128, 0.46846083,
+        0.5406743 ]
+    nat = [0.629774,   0.34528926, 0.5801978,  0.5119312,  0.6002703,  0.39179265,
+        0.40346754, 0.61298615, 0.57161516, 0.45736697, 0.2752079,  0.5498024,
+        0.61861384, 0.3812257,  0.41523,    0.42546853, 0.5350875,  0.35232106,
+        0.42722198, 0.5038681,  0.43566447, 0.3439939,  0.43201643, 0.4262252,
+        0.48517814]
 
-
-
-    nat = [0.4460272,  0.5121875,  0.40853995, 0.47465336, 0.4278246,  0.4834166,
-        0.46826416, 0.5314082,  0.48043948, 0.5787998,  0.5173373,  0.53624415,
-        0.506326,   0.5347276,  0.42757642]
-
-    evan = [0.55635655, 0.42854428, 0.549732,   0.5304941,  0.52968353, 0.53401625,
-            0.40399665, 0.52594644, 0.5077745,  0.4597348,  0.52699035, 0.5100265,
-            0.43109906, 0.539369,  0.49081263]
 
     frames = 150
     fourcc = cv2.VideoWriter_fourcc('M','J','P','G')
-    out = cv2.VideoWriter('convNat.avi',fourcc, 30, (56*3, 68*3), True)
+    out = cv2.VideoWriter('convEvan.avi',fourcc, 30, (56*3, 68*3), True)
 
     for i in tqdm(range(len(evan))):
         for f in range(frames):
+            
+            
+            feednums = np.asarray(evan.copy())
 
-            feednums = np.asarray(nat.copy())
-            feednums[i] = f / float(frames)
+            if (feednums[i] == 1.0):
+                continue
+
+            feednums[i] = ((f / float(frames))*0.4) + 0.3 # 0 - > 1   #0.3 -> 0.6
+
             feednums = np.atleast_2d(feednums)
 
             for a in range(len(images)-1):
-                zeros = np.zeros(15)
+                zeros = np.zeros(constraintNodes)
                 zeros = np.atleast_2d(zeros)
                 feednums = np.vstack((feednums, zeros))
 

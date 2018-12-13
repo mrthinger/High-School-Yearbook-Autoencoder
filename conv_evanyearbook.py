@@ -132,19 +132,19 @@ fc_layer.count = 0
 
 
 
-c1out = 9
-c1filter = 3
-c2out = 18
+c1out = 27
+c1filter = 6
+c2out = 81
 c2filter = 3
-c3out = 36
-c3filter = 3
+c3out = 243
+c3filter = 2
 
-fc1out = 700
-fc2out = 100
+fc1out = 1000
+fc2out = 250
 
-constraintNodes = 15
+constraintNodes = 25
 
-regularization = 0.00333
+regularization = 0.02
 
 graph = tf.Graph()
 with graph.as_default():
@@ -210,11 +210,9 @@ with graph.as_default():
 
 
 iterations = 1000000
-statusEvery = 1000
 boardLogEvery = 250
-#iterations = 1000
-networkNames = ['conv20', 'conv15']
-networkIndex = 1
+networkNames = ['conv20', 'conv15', 'conv30', 'conv30v2', '4conv25']
+networkIndex = 4
 tensorboardDir = 'C:\\Projects\\ML\\autoencoder\\tensorboard\\{}'.format(networkNames[networkIndex])
 checkpointfile = 'C:\\Projects\\ML\\autoencoder\\model\\{}\\CONV_textbookAE.ckpt'.format(networkNames[networkIndex])
 with tf.Session(graph=graph) as sess:
@@ -224,14 +222,14 @@ with tf.Session(graph=graph) as sess:
     tf.global_variables_initializer().run()
 
     writer = tf.summary.FileWriter(tensorboardDir)
-    writer.add_graph(sess.graph)
+    #writer.add_graph(sess.graph)
 
     #To restore state
-    #saver.restore(sess, checkpointfile)
+    saver.restore(sess, checkpointfile)
 
-    # nus = sess.run([constraints])
-    # print('Evan', nus[0][1])
-    # print('Nat', nus[0][2])
+    nus = sess.run([constraints])
+    print('Evan', nus[0][2])
+    print('Nat', nus[0][1])
 
     for i in range(iterations):
         sess.run([optimizer])
