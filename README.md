@@ -5,21 +5,21 @@ Compresses high school yearbook photos into a discrete amount of numbers that ea
 First Idea: Use all fully connected layers
 * __evanyearbook.py__ contains the full neural network
 * __evanyearbookdecoder.py__ contains the decoder and a script to generate videos maniplulating 1 of the values at a time
-  Fully Connected Results:
+  Fully Connected Results:  
   Training    
-![training](demo\anntraining.gif)
+  ![](https://github.com/mrthinger/High-School-Yearbook-Autoencoder/blob/master/demo/anntraining.gif)
   Me    
-![Me](demo\annevan.gif)
+  ![](https://github.com/mrthinger/High-School-Yearbook-Autoencoder/blob/master/demo/annevan.gif)  
   Girl    
-![girl](demo\anngirl.gif)
+  ![](https://github.com/mrthinger/High-School-Yearbook-Autoencoder/blob/master/demo/anngirl.gif)  
+  Me -> Girl    
+  ![](https://github.com/mrthinger/High-School-Yearbook-Autoencoder/blob/master/demo/annevan2girl.gif)  
 ***
 Next Idea: Use Convolutional layers -> Fully Connected -> Convolutional Transpose
-  Convolutional Results:
+  Convolutional Results:  
   Me    
-![Me conv](demo\evanconv.gif)
+  ![](https://github.com/mrthinger/High-School-Yearbook-Autoencoder/blob/master/demo/evanconv.gif)  
   Girl    
-![girl conv](demo\girlconv.gif)
+  ![](https://github.com/mrthinger/High-School-Yearbook-Autoencoder/blob/master/demo/girlconv.gif)  
   Neural Network Graph    
-![conv graph](demo\conv_graph.png)
-
-Demo video coming soon.
+  ![](https://github.com/mrthinger/High-School-Yearbook-Autoencoder/blob/master/demo/conv_graph.png)  
