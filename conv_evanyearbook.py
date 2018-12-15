@@ -222,7 +222,7 @@ with tf.Session(graph=graph) as sess:
     tf.global_variables_initializer().run()
 
     writer = tf.summary.FileWriter(tensorboardDir)
-    #writer.add_graph(sess.graph)
+    writer.add_graph(sess.graph)
 
     #To restore state
     saver.restore(sess, checkpointfile)
