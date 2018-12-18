@@ -26,17 +26,18 @@ First Idea: Use all fully connected layers
   
 ***
 Next Idea: Use Convolutional layers -> Fully Connected -> Convolutional Transpose
-  Convolutional Results:  
-  
-  Me    
-  
-  ![](https://github.com/mrthinger/High-School-Yearbook-Autoencoder/blob/master/demo/evanconv.gif)  
-  
-  Girl   
-  
-  ![](https://github.com/mrthinger/High-School-Yearbook-Autoencoder/blob/master/demo/girlconv.gif)  
-  
-  Neural Network Graph 
-  
-  ![](https://github.com/mrthinger/High-School-Yearbook-Autoencoder/blob/master/demo/conv_graph.png) 
-  
+
+   Convolutional Results:  
+
+   Me    
+
+   ![](https://github.com/mrthinger/High-School-Yearbook-Autoencoder/blob/master/demo/evanconv.gif)  
+
+   Girl   
+
+   ![](https://github.com/mrthinger/High-School-Yearbook-Autoencoder/blob/master/demo/girlconv.gif)  
+
+   Neural Network Graph 
+
+   ![](https://github.com/mrthinger/High-School-Yearbook-Autoencoder/blob/master/demo/conv_graph.png) 
+
